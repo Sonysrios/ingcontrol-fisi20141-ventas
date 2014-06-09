@@ -13,6 +13,7 @@ import elaprendiz.modelbd.Compra;
 import elaprendiz.modelbd.DetalleCompra;
 import elaprendiz.modelbd.Kardex;
 import elaprendiz.modelbd.Moneda;
+import elaprendiz.modelbd.Producto;
 import elaprendiz.modelbd.Proveedor;
 import elaprendiz.modelgui.ModeloTablaDetalleCompra;
 import elaprendiz.modelgui.ModeloTablaProveedor;
@@ -22,6 +23,7 @@ import elaprendiz.util.CellEditorSpinnerCompra;
 import elaprendiz.util.ECampos;
 import elaprendiz.util.TableCellFormatter;
 import elaprendiz.util.text.FormatoDecimal;
+import elaprendiz.ventanas.buscar.BuscarProducto;
 import elaprendiz.ventanas.buscar.BuscarProveedor;
 import elaprendiz.ventanas.paneles.PanelAccion;
 import java.awt.Component;
@@ -247,6 +249,9 @@ public class ICompra extends javax.swing.JInternalFrame {
         this.ftfTotal.setValue(cmp.getTotal());
         this.txtNumeroDocumento.setText(cmp.getNumeroDocumento());
         this.dcFecha.setDate(cmp.getFecha());
+        
+        
+        
     }
     
     public void reniciar()
@@ -436,7 +441,6 @@ public class ICompra extends javax.swing.JInternalFrame {
         jPanel1.add(txtNumeroDocumento, gridBagConstraints);
 
         dcFecha.setDate(Calendar.getInstance().getTime());
-        dcFecha.setDateFormatString("dd/MM/yyyy");
         dcFecha.setEnabled(false);
         dcFecha.setPreferredSize(new java.awt.Dimension(120, 22));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -834,28 +838,38 @@ public class ICompra extends javax.swing.JInternalFrame {
         pnlBuscar.setOpaque(false);
 
         bntPrimero.setBackground(new java.awt.Color(102, 204, 0));
-        bntPrimero.setText("<");
-        bntPrimero.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bntPrimeroActionPerformed(evt);
-            }
-        });
+        bntPrimero.setText("<<");
         pnlBuscar.add(bntPrimero);
 
         bntAnterior.setBackground(new java.awt.Color(102, 204, 0));
-        bntAnterior.setText("<<");
+        bntAnterior.setText("<");
+        bntAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntAnteriorActionPerformed(evt);
+            }
+        });
         pnlBuscar.add(bntAnterior);
 
         bntBuscar.setBackground(new java.awt.Color(102, 204, 0));
         bntBuscar.setText("Buscar");
+        bntBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntBuscarActionPerformed(evt);
+            }
+        });
         pnlBuscar.add(bntBuscar);
 
         bntSiguiente.setBackground(new java.awt.Color(102, 204, 0));
-        bntSiguiente.setText(">>");
+        bntSiguiente.setText(">");
+        bntSiguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntSiguienteActionPerformed(evt);
+            }
+        });
         pnlBuscar.add(bntSiguiente);
 
         bntUltimo.setBackground(new java.awt.Color(102, 204, 0));
-        bntUltimo.setText(">");
+        bntUltimo.setText(">>");
         bntUltimo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bntUltimoActionPerformed(evt);
@@ -1007,11 +1021,31 @@ public class ICompra extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_bntGuardarActionPerformed
 
-    private void bntUltimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntUltimoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bntUltimoActionPerformed
+    private void bntSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntSiguienteActionPerformed
+        if(this.innerOffSet == compras.size()-1)
+        {
+           this.desplazamiento +=compras.size();
+            controllerCompra.setNumPaginador(this.desplazamiento, 50);            
+            ArrayList<Compra> tmp = controllerCompra.getRegistros(new Object[]{1});
+            if(tmp.isEmpty())
+            {                    
+                bntUltimo.setEnabled(false);
+                bntSiguiente.setEnabled(false);               
+            }else{  
+                    compras = tmp;
+                    innerOffSet = 0;
+                   setValores(compras.get(innerOffSet));
+            }
+            
+        }else{  
+            this.innerOffSet++;
+            setValores(compras.get(innerOffSet));
+        }
+        bntPrimero.setEnabled(true);
+        bntAnterior.setEnabled(true);
+    }//GEN-LAST:event_bntSiguienteActionPerformed
 
-    private void bntPrimeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntPrimeroActionPerformed
+    private void bntAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntAnteriorActionPerformed
         // TODO add your handling code here:
         if(this.innerOffSet == 0)
         {
@@ -1024,8 +1058,8 @@ public class ICompra extends javax.swing.JInternalFrame {
                 ArrayList<Compra> tmp = controllerCompra.getRegistros(new Object[]{1});
                 if(tmp.isEmpty())
                 {
-                  bntAnterior.setEnabled(false);
                   bntPrimero.setEnabled(false);
+                  bntAnterior.setEnabled(false);
                 }else{
                     compras = tmp;
                     if(this.desplazamiento > 0)
@@ -1035,8 +1069,8 @@ public class ICompra extends javax.swing.JInternalFrame {
                     
                     if(compras.indexOf(compra)==0)
                     {
-                        bntAnterior.setEnabled(false);
                         bntPrimero.setEnabled(false);
+                        bntAnterior.setEnabled(false);
                     }
                 }
                 setValores(compras.get(innerOffSet));
@@ -1046,9 +1080,17 @@ public class ICompra extends javax.swing.JInternalFrame {
             setValores(compras.get(innerOffSet));
             //inicializarProducto(compras.get(innerOffSet));
         }
-         bntSiguiente.setEnabled(true);
          bntUltimo.setEnabled(true);
-    }//GEN-LAST:event_bntPrimeroActionPerformed
+         bntSiguiente.setEnabled(true);
+    }//GEN-LAST:event_bntAnteriorActionPerformed
+
+    private void bntUltimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntUltimoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bntUltimoActionPerformed
+
+    private void bntBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntBuscarActionPerformed
+  
+    }//GEN-LAST:event_bntBuscarActionPerformed
 
     private void setProveedor(Proveedor proveedor)
     {
