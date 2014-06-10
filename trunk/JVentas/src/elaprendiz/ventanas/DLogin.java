@@ -296,12 +296,12 @@ public class DLogin extends javax.swing.JDialog {
         {
             String msg = "";
             AppConfig.Estado configUsuario = AppConfig.configUsuario(this.txtUsuario.getText(), String.copyValueOf(this.ptxtPass.getPassword()));
-            if(configUsuario == AppConfig.Estado.NO_EXISTE)
-            {
+            if(configUsuario == AppConfig.Estado.NO_EXISTE){
                 msg = "El usuario: "+this.txtUsuario.getText()+" no existe.";
-            }else if(configUsuario == AppConfig.Estado.ERROR_CLAVE)
-            {
+            }else if(configUsuario == AppConfig.Estado.ERROR_CLAVE){
                 msg = "Contraseña Incorrecta!";
+            }else if(configUsuario == AppConfig.Estado.ERROR){
+                msg = "Error en el Sistema, vuelva a intentarlo!";
             }else{
                 CEncargadoAlmacen controllerEa = new CEncargadoAlmacen();                
                 ArrayList<EncargadoAlmacen> rEa = controllerEa.getRegistrosPorEncargado(AppConfig.getUsuario().getPrimaryKey());

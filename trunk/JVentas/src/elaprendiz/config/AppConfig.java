@@ -35,12 +35,12 @@ public class AppConfig implements Serializable{
     
     public static Estado configUsuario(String login,String clave)
     {
-        if(usuario == null)
-        {
+//        if(usuario == null)
+//        {
             return initUsuario(login,clave);
-        }else{
-            return Estado.ERROR;
-        }
+//        }else{
+//            return Estado.ERROR;
+//        }
     }
 
     public static Usuario getUsuario() {
